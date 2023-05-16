@@ -11,7 +11,7 @@ const urlParams = new URLSearchParams(window.location.search)
 const apiKey = urlParams.get("apiKey")
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [locations, setLocations] = useState<Map<string, Observation[]>>()
   const latitude = 42.4557474
   const longitude = -71.3565596
   const daysBack = 3
@@ -33,13 +33,13 @@ function App() {
             const results = await fetchRarities(apiKey, latitude, longitude, daysBack)
             const observations: Observation[] = await results.json()
             const locations = processRarities(observations)
-            setCount(locations.size)
+            setLocations(locations)
           }
         }}>
-          count is {count}
+          {locations ? `${locations.size} observations found` : 'Click to find rarities'}
         </button>
       </div>
-      <Map latitude={latitude} longitude={longitude} />
+      <Map latitude={latitude} locations={locations} longitude={longitude} />
     </>
   )
 }
