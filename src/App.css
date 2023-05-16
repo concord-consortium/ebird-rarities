@@ -40,3 +40,9 @@
 .read-the-docs {
   color: #888;
 }
+
+.input-invalid {
+  border: 0px;
+  border-radius: 1px;
+  outline: 2px solid red;
+}

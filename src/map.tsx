@@ -9,10 +9,11 @@ interface IMapProps {
   latitude: number
   locations?: Map<string, Observation[]>
   longitude: number
+  setMap?: any
 }
-export function Map({ latitude, locations, longitude }: IMapProps) {
+export function Map({ latitude, locations, longitude, setMap }: IMapProps) {
   return (
-    <MapContainer center={[latitude, longitude]} zoom={9} scrollWheelZoom={false} touchZoom={true} >
+    <MapContainer center={[latitude, longitude]} zoom={9} scrollWheelZoom={false} touchZoom={true} ref={setMap} >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
