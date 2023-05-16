@@ -42,7 +42,7 @@ export function eBirdUserHotSpotUrl(locId: string) {
 export async function fetchRarities(apiKey: string, lat: number, lng: number, daysBack = 5) {
   const latStr = lat.toFixed(2)
   const lngStr = lng.toFixed(2)
-  const url = `https://api.ebird.org/v2/data/obs/geo/recent/notable?key=${apiKey}&lat=${latStr}&lng=${lngStr}&dist=50&back=${daysBack}`
+  const url = `https://api.ebird.org/v2/data/obs/geo/recent/notable?key=${apiKey}&lat=${latStr}&lng=${lngStr}&back=${daysBack}`
   return fetch(url)
 }
 
