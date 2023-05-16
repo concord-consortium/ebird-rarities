@@ -10,12 +10,14 @@ const apiKey = urlParams.get("apiKey")
 
 function App() {
   const [defaultLatitude, defaultLongitude] = [42.4557474, -71.3565596]
+  const [minDaysBack, maxDaysBack] = [1, 30]
+  const defaultDaysBack = 3
   const [locationValid, setLocationValid] = useState(true)
   const [latitude, setLatitude] = useState(defaultLatitude)
   const [longitude, setLongitude] = useState(defaultLongitude)
   const [locations, setLocations] = useState<LocationMap>()
-  const daysBack = 3
-  // const [daysBack, setDaysBack] = useState(3)
+  const [daysBackValid, setDaysBackValid] = useState(true)
+  const [daysBack, setDaysBack] = useState(defaultDaysBack)
   const [map, setMap] = useState<any>(null)
 
   const updateLocation: FocusEventHandler<HTMLInputElement> = (event) => {
@@ -41,6 +43,23 @@ function App() {
     }
   }
 
+  const updateDaysBack: FocusEventHandler<HTMLInputElement> = (event) => {
+    const daysBackString = event.target.value.replace(/\s+/g, "")
+    if (!daysBackString) {
+      setDaysBackValid(true)
+      setDaysBack(defaultDaysBack)
+      return
+    }
+    const daysBackNumber = Number(daysBackString)
+    if (isNaN(daysBackNumber) || daysBackNumber < minDaysBack || daysBackNumber > maxDaysBack) {
+      setDaysBackValid(false)
+      setDaysBack(defaultDaysBack)
+    } else {
+      setDaysBackValid(true)
+      setDaysBack(Math.round(daysBackNumber))
+    }
+  }
+
   const onClick = async () => {
     if (apiKey) {
       const results = await fetchRarities(apiKey, latitude, longitude, daysBack)
@@ -56,9 +75,14 @@ function App() {
   return (
     <>
       <div className="ui-area">
+        <h4>Options</h4>
         <div className="ui-row">
           <label htmlFor="location">Location (lat, long): </label>
           <input className={locationValid ? "" : "input-invalid"} id="location" onChange={updateLocation} />
+        </div>
+        <div className="ui-row">
+          <label htmlFor="daysBack">Number of days ({minDaysBack}-{maxDaysBack}): </label>
+          <input className={daysBackValid ? "" : "input-invalid"} id="daysBack" onChange={updateDaysBack} />
         </div>
       </div>
       <div className="card">
