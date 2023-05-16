@@ -1,6 +1,7 @@
 import { clsx } from "clsx"
 import { CircleMarker, Popup } from 'react-leaflet'
 
+import { checklistUrlBase } from "./constants"
 import { LocationInfo } from './ebird-api'
 
 import "./location-marker.css"
@@ -41,7 +42,11 @@ export function LocationMarker({ latitude, longitude, locInfo }: ILocationMarker
               <div key={`${firstObservation?.locId}-${speciesId}`}>
                 <span className={clsx("observation-status", { valid: first?.obsValid })}>{status}</span>
                 {"\u00a0"}
-                <span className="species-name">{first?.comName}</span> ({observations?.length ?? 0})
+                <span className="species-name">
+                  <a href={checklistUrlBase + first?.subId} target="_blank">
+                    {first?.comName}
+                  </a>
+                </span> ({observations?.length ?? 0})
               </div>
             )
           })}
