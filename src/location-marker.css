@@ -1,0 +1,18 @@
+.location-popup {
+  display: flex;
+  flex-direction: column;
+
+  .location-name {
+    font-weight: bold;
+  }
+
+  .observation-status {
+    &.valid {
+      color: green
+    }
+  }
+
+  .species-name {
+    font-weight: bold;
+  }
+}

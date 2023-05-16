@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { Map } from './map'
-import { Observation, fetchRarities, processRarities } from './ebird-api'
+import { LocationMap, Observation, fetchRarities, processRarities } from './ebird-api'
 
 import './App.css'
 
@@ -9,7 +9,7 @@ const urlParams = new URLSearchParams(window.location.search)
 const apiKey = urlParams.get("apiKey")
 
 function App() {
-  const [locations, setLocations] = useState<Map<string, Observation[]>>()
+  const [locations, setLocations] = useState<LocationMap>()
   const latitude = 42.4557474
   const longitude = -71.3565596
   const daysBack = 3
@@ -25,7 +25,7 @@ function App() {
             setLocations(locations)
           }
         }}>
-          {locations ? `${locations.size} observations found` : 'Click to find rarities'}
+          {locations ? `${locations.size} locations found` : 'Click to find rarities'}
         </button>
       </div>
       <Map latitude={latitude} locations={locations} longitude={longitude} />
