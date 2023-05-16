@@ -2,16 +2,20 @@ import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 
 import "./map.css";
 
-export function Map() {
+interface IMapProps {
+  latitude: number;
+  longitude: number;
+}
+export function Map({ latitude, longitude }: IMapProps) {
   return (
-    <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false}>
+    <MapContainer center={[latitude, longitude]} zoom={13} scrollWheelZoom={false} touchZoom={true} >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <Marker position={[51.505, -0.09]}>
+      <Marker position={[latitude, longitude]}>
         <Popup>
-          A pretty CSS3 popup. <br /> Easily customizable.
+          Bird seen here.
         </Popup>
       </Marker>
     </MapContainer>

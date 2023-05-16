@@ -8,6 +8,8 @@ import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
+  const latitude = 42.46;
+  const longitude = -71.36;
 
   return (
     <>
@@ -25,7 +27,7 @@ function App() {
           count is {count}
         </button>
       </div>
-      <Map />
+      <Map latitude={latitude} longitude={longitude} />
     </>
   )
 }
