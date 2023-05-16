@@ -1,10 +1,7 @@
-import { clsx } from "clsx"
-import { CircleMarker, Popup } from 'react-leaflet'
+import { CircleMarker } from 'react-leaflet'
 
-import { checklistUrlBase } from "./constants"
 import { LocationInfo } from './ebird-api'
-
-import "./location-marker.css"
+import { LocationPopup } from "./location-popup"
 
 interface ILocationMarkerProps {
   latitude: number
@@ -19,39 +16,25 @@ export function LocationMarker({ latitude, longitude, locInfo }: ILocationMarker
   const rawBlue = (255 - colorFactor).toString(16)
   const blue = rawBlue.length < 2 ? `0${rawBlue}` : rawBlue
   const color = `#${red}00${blue}`
+
   const species = locInfo.species
   const speciesKeys = Array.from(species.keys())
   const firstSpeciesKey = speciesKeys?.[0]
   const firstObservation = species.get(firstSpeciesKey)?.[0]
   const locationName = firstObservation?.locName ?? ""
+  const locationId = firstObservation?.locId ?? ""
+
   return (
-    <CircleMarker center={[latitude, longitude]} radius={10} pathOptions={{ color, fillColor: color, fillOpacity: .4 }}>
-      <Popup>
-        <div className='location-popup'>
-          <div className="location-name">{locationName}</div>
-          <br/>
-          {speciesKeys.map(speciesId => {
-            const observations = species.get(speciesId)
-            const first = observations?.[0]
-            const status = first?.obsValid
-                            ? "✓"
-                            : first?.obsReviewed && !first.obsValid
-                              ? "𐄂"
-                              : ""
-            return first && (
-              <div key={`${firstObservation?.locId}-${speciesId}`}>
-                <span className={clsx("observation-status", { valid: first?.obsValid })}>{status}</span>
-                {"\u00a0"}
-                <span className="species-name">
-                  <a href={checklistUrlBase + first?.subId} target="_blank">
-                    {first?.comName}
-                  </a>
-                </span> ({observations?.length ?? 0})
-              </div>
-            )
-          })}
-        </div>
-      </Popup>
+    <CircleMarker
+      center={[latitude, longitude]}
+      radius={10}
+      pathOptions={{ color, fillColor: color, fillOpacity: .4 }}
+    >
+      <LocationPopup
+        locationId={locationId}
+        locationName={locationName}
+        species={species}
+      />
     </CircleMarker>
   );
 }
