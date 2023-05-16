@@ -1,9 +1,9 @@
 import { clsx } from "clsx"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Popup } from "react-leaflet"
 
 import { checklistUrlBase } from "./constants"
-import { Observation, SpeciesMap } from "./ebird-api"
+import { LocationInfo, Observation, eBirdUserHotSpotUrl } from "./ebird-api"
 
 import "./location-popup.css"
 
@@ -54,20 +54,29 @@ function SpeciesRow({ locationId, observations, speciesId }: ISpeciesRowProps) {
 }
 
 interface ILocationPopupProps {
-  locationId: string
-  locationName: string
-  species: SpeciesMap
+  location: LocationInfo
 }
-export function LocationPopup({ locationId, locationName, species }: ILocationPopupProps) {
-  const speciesKeys = Array.from(species.keys())
+export function LocationPopup({ location }: ILocationPopupProps) {
+  const [isHotSpot, setIsHotSpot] = useState(false)
+  useEffect(() => {
+    async function updateHotSpotStatus() {
+      setIsHotSpot((await location.response).ok)
+    }
+    updateHotSpotStatus()
+  }, [location.response])
+  const speciesKeys = Array.from(location.species.keys())
   return (
     <Popup>
       <div className='location-popup'>
-        <div className="location-name">{locationName}</div>
+        <div className="location-name">
+          {isHotSpot
+            ? <a target="_blank" href={eBirdUserHotSpotUrl(location.locId)}>{location.locName}</a>
+            : location.locName}
+        </div>
         <br/>
         {speciesKeys.map(speciesId => {
-          const observations = species.get(speciesId)
-          return <SpeciesRow key={speciesId} locationId={locationId} observations={observations} speciesId={speciesId} />
+          const observations = location.species.get(speciesId)
+          return <SpeciesRow locationId={location.locId} observations={observations} speciesId={speciesId} />
         })}
       </div>
     </Popup>

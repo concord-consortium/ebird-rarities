@@ -16,7 +16,18 @@ export interface Observation {
 
 export type SpeciesMap = Map<string, Observation[]>
 
+export interface HotSpotInfo {
+  locId: string
+  name: string
+  latitude: number
+  longitude: number
+  isHotSpot: boolean
+  hierarchicalName: string
+}
 export interface LocationInfo {
+  locId: string
+  locName: string
+  response: Promise<Response>
   species: SpeciesMap
   speciesCount: number
   observationCount: number
@@ -24,18 +35,29 @@ export interface LocationInfo {
 
 export type LocationMap = Map<string, LocationInfo>
 
+export function eBirdUserHotSpotUrl(locId: string) {
+  return `https://ebird.org/hotspot/${locId}`
+}
+
 export async function fetchRarities(apiKey: string, lat: number, lng: number, daysBack = 5) {
   const latStr = lat.toFixed(2)
   const lngStr = lng.toFixed(2)
-  const url = `https://api.ebird.org/v2/data/obs/geo/recent/notable?key=${apiKey}&lat=${latStr}&lng=${lngStr}&back=${daysBack}`
+  const url = `https://api.ebird.org/v2/data/obs/geo/recent/notable?key=${apiKey}&lat=${latStr}&lng=${lngStr}&dist=50&back=${daysBack}`
   return fetch(url)
 }
 
-export function processRarities(observations: Observation[]) {
+export function fetchHotSpotResponse(apiKey: string, locId: string) {
+  return fetch(`https://api.ebird.org/v2/ref/hotspot/info/${locId}?key=${apiKey}`)
+}
+
+export function processRarities(apiKey: string, observations: Observation[]) {
   const locMap = new Map<string, LocationInfo>()
   observations.forEach(obs => {
     if (!locMap.has(obs.locId)) {
       locMap.set(obs.locId, {
+        locId: obs.locId,
+        locName: obs.locName,
+        response: fetchHotSpotResponse(apiKey, obs.locId),
         speciesCount: 0,
         observationCount: 0,
         species: new Map<string, Observation[]>()

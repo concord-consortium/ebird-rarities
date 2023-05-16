@@ -17,24 +17,13 @@ export function LocationMarker({ latitude, longitude, locInfo }: ILocationMarker
   const blue = rawBlue.length < 2 ? `0${rawBlue}` : rawBlue
   const color = `#${red}00${blue}`
 
-  const species = locInfo.species
-  const speciesKeys = Array.from(species.keys())
-  const firstSpeciesKey = speciesKeys?.[0]
-  const firstObservation = species.get(firstSpeciesKey)?.[0]
-  const locationName = firstObservation?.locName ?? ""
-  const locationId = firstObservation?.locId ?? ""
-
   return (
     <CircleMarker
       center={[latitude, longitude]}
       radius={10}
       pathOptions={{ color, fillColor: color, fillOpacity: .4 }}
     >
-      <LocationPopup
-        locationId={locationId}
-        locationName={locationName}
-        species={species}
-      />
+      <LocationPopup location={locInfo} />
     </CircleMarker>
   );
 }

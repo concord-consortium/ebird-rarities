@@ -64,7 +64,7 @@ function App() {
     if (apiKey) {
       const results = await fetchRarities(apiKey, latitude, longitude, daysBack)
       const observations: Observation[] = await results.json()
-      const locations = processRarities(observations)
+      const locations = processRarities(apiKey, observations)
       setLocations(locations)
       if (map) {
         map.setView([latitude, longitude])
