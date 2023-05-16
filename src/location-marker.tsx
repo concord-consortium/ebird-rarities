@@ -38,7 +38,7 @@ export function LocationMarker({ latitude, longitude, locInfo }: ILocationMarker
                               ? "𐄂"
                               : ""
             return first && (
-              <div>
+              <div key={`${firstObservation?.locId}-${speciesId}`}>
                 <span className={clsx("observation-status", { valid: first?.obsValid })}>{status}</span>
                 {"\u00a0"}
                 <span className="species-name">{first?.comName}</span> ({observations?.length ?? 0})

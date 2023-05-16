@@ -33,6 +33,7 @@ export function Map({ latitude, locations, longitude, setMap }: IMapProps) {
               return firstObservation
                 ? (
                     <LocationMarker
+                      key={firstObservation.locId}
                       latitude={firstObservation.lat}
                       longitude={firstObservation.lng}
                       locInfo={locInfo}
