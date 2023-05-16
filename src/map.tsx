@@ -1,13 +1,13 @@
 import { MapContainer, TileLayer } from 'react-leaflet'
 
-import { Observation } from './ebird-api'
+import { LocationMap } from './ebird-api'
 import { LocationMarker } from './location-marker'
 
 import "./map.css"
 
 interface IMapProps {
   latitude: number
-  locations?: Map<string, Observation[]>
+  locations?: LocationMap
   longitude: number
   setMap?: any
 }
@@ -20,16 +20,19 @@ export function Map({ latitude, locations, longitude, setMap }: IMapProps) {
       />
       { locations ?
         Array.from(locations.keys()).map((locationId: string) => {
-          const observations = locations.get(locationId);
-          if (observations) {
-            const firstObservation = observations[0];
-            return (
-              <LocationMarker 
-                latitude={firstObservation.lat}
-                longitude={firstObservation.lng}
-                observations={observations}
-              />
-            )
+          const locInfo = locations.get(locationId);
+          if (locInfo) {
+            const firstSpecies = Array.from(locInfo.species.keys())[0]
+            const firstObservation = locInfo.species.get(firstSpecies)?.[0]
+            return firstObservation
+              ? (
+                  <LocationMarker
+                    latitude={firstObservation.lat}
+                    longitude={firstObservation.lng}
+                    species={locInfo.species}
+                  />
+                )
+              : null
           }
         })
         : null

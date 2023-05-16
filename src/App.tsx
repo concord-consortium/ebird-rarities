@@ -1,7 +1,7 @@
 import { FocusEventHandler, useState } from 'react'
 
 import { Map } from './map'
-import { Observation, fetchRarities, processRarities } from './ebird-api'
+import { LocationMap, Observation, fetchRarities, processRarities } from './ebird-api'
 
 import './App.css'
 
@@ -13,9 +13,9 @@ function App() {
   const [locationValid, setLocationValid] = useState(true)
   const [latitude, setLatitude] = useState(defaultLatitude)
   const [longitude, setLongitude] = useState(defaultLongitude)
+  const [locations, setLocations] = useState<LocationMap>()
   const daysBack = 3
   // const [daysBack, setDaysBack] = useState(3)
-  const [locations, setLocations] = useState<Map<string, Observation[]>>()
   const [map, setMap] = useState<any>(null)
 
   const updateLocation: FocusEventHandler<HTMLInputElement> = (event) => {
