@@ -19,23 +19,29 @@ export function Map({ latitude, locations, longitude, setMap }: IMapProps) {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       { locations ?
-        Array.from(locations.keys()).map((locationId: string) => {
-          const locInfo = locations.get(locationId);
-          if (locInfo) {
-            const firstSpecies = Array.from(locInfo.species.keys())[0]
-            const firstObservation = locInfo.species.get(firstSpecies)?.[0]
-            return firstObservation
-              ? (
-                  <LocationMarker
-                    latitude={firstObservation.lat}
-                    longitude={firstObservation.lng}
-                    species={locInfo.species}
-                  />
-                )
-              : null
-          }
-        })
-        : null
+        Array.from(locations.keys())
+          .sort((loc1, loc2) => {
+            const loc1Value = locations.get(loc1)?.observationCount ?? 0
+            const loc2Value = locations.get(loc2)?.observationCount ?? 0
+            return loc1Value - loc2Value
+          })
+          .map((locationId: string) => {
+            const locInfo = locations.get(locationId);
+            if (locInfo) {
+              const firstSpecies = Array.from(locInfo.species.keys())[0]
+              const firstObservation = locInfo.species.get(firstSpecies)?.[0]
+              return firstObservation
+                ? (
+                    <LocationMarker
+                      latitude={firstObservation.lat}
+                      longitude={firstObservation.lng}
+                      locInfo={locInfo}
+                    />
+                  )
+                : null
+            }
+          })
+          : null
       }
     </MapContainer>
   )

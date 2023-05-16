@@ -18,7 +18,8 @@ export type SpeciesMap = Map<string, Observation[]>
 
 export interface LocationInfo {
   species: SpeciesMap
-  priority: number
+  speciesCount: number
+  observationCount: number
 }
 
 export type LocationMap = Map<string, LocationInfo>
@@ -31,19 +32,23 @@ export async function fetchRarities(apiKey: string, lat: number, lng: number, da
 }
 
 export function processRarities(observations: Observation[]) {
-  const map = new Map<string, LocationInfo>()
+  const locMap = new Map<string, LocationInfo>()
   observations.forEach(obs => {
-    if (!map.has(obs.locId)) {
-      map.set(obs.locId, {
-        priority: 0,
+    if (!locMap.has(obs.locId)) {
+      locMap.set(obs.locId, {
+        speciesCount: 0,
+        observationCount: 0,
         species: new Map<string, Observation[]>()
     })
     }
-    const speciesMap = map.get(obs.locId)?.species
+    const locInfo = locMap.get(obs.locId)
+    const speciesMap = locInfo?.species
     if (speciesMap && !speciesMap.has(obs.speciesCode)) {
+      ++locInfo.speciesCount
       speciesMap.set(obs.speciesCode, [])
     }
     speciesMap?.get(obs.speciesCode)?.push(obs)
+    ;(locInfo != null) && ++locInfo.observationCount
   })
-  return map
+  return locMap
 }
